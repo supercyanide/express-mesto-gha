@@ -22,7 +22,6 @@ const cardShema = new mongoose.Schema({
       ref: 'user',
       default: [],
     },
-    [],
   ],
   createdAt: {
     type: Date,
