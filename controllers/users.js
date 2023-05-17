@@ -3,7 +3,7 @@ const {
   INTERNAL_SERVER_ERROR_STATUS,
   BAD_REQUEST_ERROR_STATUS,
   NOT_FOUND_ERROR_STATUS,
-  OK,
+  CREATED,
 } = require('../utils/statusConstants');
 
 const getUsers = (req, res) => {
@@ -34,7 +34,7 @@ const getUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((users) => res.status(OK).send({ data: users }))
+    .then((users) => res.status(CREATED).send({ data: users }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST_ERROR_STATUS).send({ message: 'Переданы некорректные данные' });

@@ -3,7 +3,7 @@ const {
   INTERNAL_SERVER_ERROR_STATUS,
   BAD_REQUEST_ERROR_STATUS,
   NOT_FOUND_ERROR_STATUS,
-  OK,
+  CREATED,
 } = require('../utils/statusConstants');
 
 const getCards = (req, res) => {
@@ -17,7 +17,7 @@ const getCards = (req, res) => {
 const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((cards) => res.status(OK).send({ data: cards }))
+    .then((card) => res.status(CREATED).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST_ERROR_STATUS).send({ message: 'Переданы некорректные данные' });
@@ -29,12 +29,12 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((cards) => {
-      if (!cards) {
+    .then((card) => {
+      if (!card) {
         res.status(NOT_FOUND_ERROR_STATUS).send({ message: 'Карточка не найден' });
         return;
       }
-      res.send({ data: cards });
+      res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -54,8 +54,9 @@ const likeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(NOT_FOUND_ERROR_STATUS).send({ message: 'Карточка не найдена' });
+        return;
       }
-      res.send(card);
+      res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -75,6 +76,7 @@ const dislikeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(NOT_FOUND_ERROR_STATUS).send({ message: 'Карточка не найдена' });
+        return;
       }
       res.send(card);
     })
