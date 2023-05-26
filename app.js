@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -10,6 +11,7 @@ const signUpRouter = require('./routes/signup');
 const cardRouter = require('./routes/cards');
 
 const auth = require('./middlewares/auth');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const NotFoundError = require('./errors/NotFoundError');
 const errorHandler = require('./middlewares/error-handler');
@@ -22,6 +24,8 @@ app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
 
+app.use(requestLogger);
+
 app.use(signInRouter);
 app.use(signUpRouter);
 
@@ -29,6 +33,7 @@ app.use(auth);
 
 app.use(userRouter);
 app.use(cardRouter);
+app.use(errorLogger);
 
 app.use('*', (req, res, next) => {
   next(new NotFoundError('URL не найден'));
